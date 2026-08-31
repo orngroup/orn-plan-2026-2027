@@ -6,138 +6,126 @@
 <title>ORN Europe — Delivery Board</title>
 <style>
   :root{
-    --black:#0b0b0d;--header:#000;
-    --bg:#f5f5f4;--card:#ffffff;--card2:#fafafa;
+    --header:#000;
+    --bg:#f4f4f3;--card:#ffffff;--card2:#fafafa;
     --line:#e4e4e2;--line2:#d4d4d1;
     --ink:#18181b;--ink2:#3f3f46;--grey:#71717a;--grey2:#a1a1aa;
     --red:#DC051E;--red-soft:#fdecee;--red-line:#f6c9ce;
-    --green:#15803d;--green-soft:#e7f6ec;
-    --amber:#b45309;--amber-soft:#fdf3e6;
-    --blue:#1d4ed8;
+    --green:#15803d;--amber:#b45309;--blue:#1d4ed8;
+    --t-todo:#eaf2fd;--t-todo-b:#c9ddf7;
+    --t-prog:#fdf6e3;--t-prog-b:#f0dfa8;
+    --t-next:#fdecec;--t-next-b:#f4c9c9;
+    --t-done:#e9f6ee;--t-done-b:#bfe3cd;
     --serif:Georgia,'Times New Roman',serif;
     --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
   }
   *{box-sizing:border-box;margin:0;padding:0}
   html{scroll-behavior:smooth}
-  body{background:var(--bg);color:var(--ink);font-family:var(--sans);
-    font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
   .wrap{max-width:1680px;margin:0 auto;padding:0 20px}
-
-  /* ===== BLACK HEADER ===== */
-  header.top{background:var(--header);border-bottom:3px solid var(--red);
-    position:sticky;top:0;z-index:100}
-  .top-inner{display:flex;align-items:center;justify-content:space-between;height:58px}
+  header.top{background:var(--header);border-bottom:3px solid var(--red);position:sticky;top:0;z-index:100}
+  .top-inner{display:flex;align-items:center;justify-content:space-between;height:56px}
   .logo{display:flex;align-items:center;gap:11px}
-  .logo-tile{background:var(--red);color:#fff;font-weight:800;font-size:18px;
-    letter-spacing:-1px;padding:5px 10px 6px;border-radius:7px;line-height:1}
+  .logo-tile{background:var(--red);color:#fff;font-weight:800;font-size:18px;letter-spacing:-1px;padding:5px 10px 6px;border-radius:7px;line-height:1}
   .logo-txt .a{font-size:12px;letter-spacing:2px;font-weight:600;color:#fff}
   .logo-txt .b{font-size:8px;letter-spacing:2px;color:#8a8a90;text-transform:uppercase}
   .top-right{display:flex;align-items:center;gap:8px}
-  .syncpill{display:flex;align-items:center;gap:6px;font-size:11px;color:#a1a1aa;
-    padding:5px 11px;border:1px solid #2a2a2e;border-radius:100px}
+  .syncpill{display:flex;align-items:center;gap:6px;font-size:11px;color:#a1a1aa;padding:5px 11px;border:1px solid #2a2a2e;border-radius:100px}
   .syncdot{width:7px;height:7px;border-radius:50%;background:#555;flex:none}
   .syncdot.on{background:#22c55e;box-shadow:0 0 6px #22c55e}
   .syncdot.off{background:var(--red)}
-  .btn{font-size:11px;letter-spacing:.5px;font-weight:600;padding:7px 12px;
-    border-radius:6px;border:1px solid #2a2a2e;color:#d4d4d8;background:#141417;
-    cursor:pointer;transition:.15s}
+  .btn{font-size:11px;letter-spacing:.5px;font-weight:600;padding:7px 12px;border-radius:6px;border:1px solid #2a2a2e;color:#d4d4d8;background:#141417;cursor:pointer;transition:.15s}
   .btn:hover{color:#fff;border-color:var(--red)}
-
-  /* ===== COMPACT TOOLBAR ===== */
-  .toolbar{background:var(--card);border-bottom:1px solid var(--line);
-    position:sticky;top:58px;z-index:90}
-  .tb-inner{display:flex;align-items:center;gap:18px;flex-wrap:wrap;padding:10px 0}
+  .toolbar{background:var(--card);border-bottom:1px solid var(--line);position:sticky;top:56px;z-index:90}
+  .tb-inner{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:9px 0}
   .tb-title{font-family:var(--serif);font-size:17px;font-weight:400}
   .tb-title b{color:var(--red);font-style:italic;font-family:var(--serif);font-weight:400}
-  .tb-stats{display:flex;gap:16px;flex-wrap:wrap;margin-left:auto;align-items:center}
+  .tb-stats{display:flex;gap:14px;flex-wrap:wrap;margin-left:auto;align-items:center}
   .stat{display:flex;align-items:baseline;gap:5px}
   .stat .n{font-weight:700;font-size:15px}
-  .stat .n.red{color:var(--red)}.stat .n.green{color:var(--green)}.stat .n.amber{color:var(--amber)}
+  .stat .n.red{color:var(--red)}.stat .n.green{color:var(--green)}.stat .n.amber{color:var(--amber)}.stat .n.blue{color:var(--blue)}
   .stat .l{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--grey)}
-  .progressbar{height:6px;background:var(--line);border-radius:100px;width:140px;overflow:hidden;display:flex}
+  .progressbar{height:6px;background:var(--line);border-radius:100px;width:130px;overflow:hidden;display:flex}
   .progressbar i{height:100%;display:block}
-  .pb-d{background:var(--green)}.pb-p{background:var(--amber)}.pb-n{background:var(--red)}
-
-  /* filter chips */
+  .pb-d{background:var(--green)}.pb-p{background:var(--amber)}.pb-n{background:var(--red)}.pb-t{background:var(--blue)}
   .filters{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
-  .fchip{font-size:11px;padding:5px 11px;border-radius:100px;border:1px solid var(--line2);
-    background:var(--card);color:var(--ink2);cursor:pointer;transition:.12s}
+  .fchip{font-size:11px;padding:5px 11px;border-radius:100px;border:1px solid var(--line2);background:var(--card);color:var(--ink2);cursor:pointer;transition:.12s}
   .fchip:hover{border-color:var(--grey)}
   .fchip.active{background:var(--ink);color:#fff;border-color:var(--ink)}
   .fchip.active.r{background:var(--red);border-color:var(--red)}
-
-  /* ===== OVERVIEW STRIP (compact, collapsible) ===== */
   .ov{background:var(--card);border-bottom:1px solid var(--line)}
-  .ov-inner{padding:12px 0}
-  .ov-head{display:flex;align-items:center;justify-content:space-between;cursor:pointer;
-    font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--grey);margin-bottom:0}
+  .ov-inner{padding:11px 0}
+  .ov-head{display:flex;align-items:center;justify-content:space-between;cursor:pointer;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--grey)}
   .ov-head .tgl{font-size:11px;color:var(--red)}
-  .ov-body{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:12px}
-  .ov.collapsed .ov-body{display:none}
-  .ovlane{border:1px solid var(--line);border-radius:8px;padding:10px 11px;
-    border-top:3px solid var(--red);text-decoration:none;color:inherit;display:block;
-    background:var(--card2);transition:.12s}
+  .ov-body{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:11px}
+  .ov.collapsed .ov-body,.ov.collapsed .ov-cross{display:none}
+  .ovlane{border:1px solid var(--line);border-radius:8px;padding:10px 11px;border-top:3px solid var(--red);text-decoration:none;color:inherit;display:block;background:var(--card2);transition:.12s}
   .ovlane:hover{background:#fff;border-color:var(--red-line)}
   .ovlane .n{font-family:var(--serif);font-size:15px;color:var(--red)}
   .ovlane .t{font-size:12px;font-weight:600;margin:2px 0 6px;line-height:1.25}
   .ovlane .m{font-size:10px;color:var(--grey)}
   .ovlane .b{height:5px;background:var(--line);border-radius:3px;margin-top:7px;overflow:hidden;display:flex}
   .ovlane .b i{height:100%;display:block}
-  .ov-cross{margin-top:8px;border:1px dashed var(--red-line);border-radius:8px;
-    background:var(--red-soft);padding:9px 12px;display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+  .ov-cross{margin-top:8px;border:1px dashed var(--red-line);border-radius:8px;background:var(--red-soft);padding:9px 12px;display:flex;gap:7px;flex-wrap:wrap;align-items:center}
   .ov-cross .lab{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--red);font-weight:700}
-  .ov-cross .chip{font-size:10px;color:var(--ink2);background:#fff;border:1px solid var(--red-line);
-    border-radius:100px;padding:3px 9px}
-
-  /* ===== BOARD ===== */
-  .boardscroll{overflow-x:auto;padding:14px 0 24px}
-  .board{display:grid;grid-template-columns:repeat(5,minmax(300px,1fr));gap:10px;min-width:1560px}
-  .lane{background:transparent;display:flex;flex-direction:column}
-  .lane-hd{padding:11px 12px;border:1px solid var(--line);border-top:3px solid var(--red);
-    border-radius:8px 8px 0 0;background:var(--card);position:sticky;top:106px;z-index:5}
+  .ov-cross .chip{font-size:10px;color:var(--ink2);background:#fff;border:1px solid var(--red-line);border-radius:100px;padding:3px 9px}
+  .key{display:flex;flex-wrap:wrap;gap:14px;align-items:center;padding:11px 0 3px}
+  .key .lbl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--grey2)}
+  .key .dot{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--ink2)}
+  .key .dot i{width:12px;height:12px;border-radius:3px;display:inline-block;border:1px solid}
+  .kk-todo{background:var(--t-todo);border-color:var(--t-todo-b)}
+  .kk-prog{background:var(--t-prog);border-color:var(--t-prog-b)}
+  .kk-next{background:var(--t-next);border-color:var(--t-next-b)}
+  .kk-done{background:var(--t-done);border-color:var(--t-done-b)}
+  .boardscroll{overflow-x:auto;padding:12px 0 26px}
+  .board{display:grid;grid-template-columns:repeat(5,minmax(300px,1fr));gap:12px;min-width:1580px;align-items:start}
+  .lane{display:flex;flex-direction:column}
+  .lane-hd{padding:12px 13px;border:1px solid var(--line);border-top:3px solid var(--red);border-radius:9px 9px 0 0;background:var(--card);position:sticky;top:103px;z-index:5}
   .lane-hd .ln{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--red);font-weight:700}
-  .lane-hd .lt{font-size:14px;font-weight:700;margin:3px 0 4px;line-height:1.2}
-  .lane-hd .lo{font-size:10.5px;color:var(--grey);line-height:1.45}
+  .lane-hd .lt{font-size:14px;font-weight:700;margin:3px 0 4px;line-height:1.25}
+  .lane-hd .lo{font-size:10.5px;color:var(--grey);line-height:1.5}
   .lane-hd .lo b{color:var(--ink2)}
-  .lane-body{padding:8px;border:1px solid var(--line);border-top:none;border-radius:0 0 8px 8px;
-    background:var(--card2);display:flex;flex-direction:column;gap:7px;flex:1}
-
-  /* task card */
-  .task{background:var(--card);border:1px solid var(--line);border-radius:7px;
-    border-left:3px solid var(--grey2);transition:.12s}
+  .lane-body{padding:10px;border:1px solid var(--line);border-top:none;border-radius:0 0 9px 9px;background:var(--card2);display:flex;flex-direction:column;gap:9px;flex:1}
+  .addbtn{margin-top:2px;padding:9px;border:1px dashed var(--line2);border-radius:8px;background:transparent;color:var(--grey);font-size:12px;font-weight:600;cursor:pointer;transition:.12s;text-align:center}
+  .addbtn:hover{border-color:var(--red-line);color:var(--red);background:#fff}
+  .task{border-radius:8px;border:1px solid var(--line);border-left-width:3px;transition:.12s;background:var(--card)}
+  .task.s-todo{background:var(--t-todo);border-color:var(--t-todo-b);border-left-color:var(--blue)}
+  .task.s-prog{background:var(--t-prog);border-color:var(--t-prog-b);border-left-color:var(--amber)}
+  .task.s-next{background:var(--t-next);border-color:var(--t-next-b);border-left-color:var(--red)}
+  .task.s-done{background:var(--t-done);border-color:var(--t-done-b);border-left-color:var(--green)}
   .task.hidden{display:none}
-  .task.s-done{border-left-color:var(--green)}
-  .task.s-prog{border-left-color:var(--amber)}
-  .task.s-next{border-left-color:var(--red)}
-  .task.s-todo{border-left-color:var(--grey2)}
-  .task-top{padding:9px 10px;cursor:pointer;display:flex;gap:8px;align-items:flex-start}
-  .task-top:hover{background:var(--card2)}
-  .caret{flex:none;width:14px;color:var(--grey2);transition:.2s;font-size:10px;line-height:16px;text-align:center}
+  .task-top{padding:10px 11px;cursor:pointer;display:flex;gap:8px;align-items:flex-start}
+  .caret{flex:none;width:14px;color:var(--grey);transition:.2s;font-size:10px;line-height:16px;text-align:center}
   .task.open .caret{transform:rotate(90deg);color:var(--red)}
-  .task-ttl{font-size:12.5px;font-weight:600;line-height:1.3;color:var(--ink)}
+  .task-ttl{font-size:13px;font-weight:600;line-height:1.32;color:var(--ink)}
   .task.s-done .task-ttl{color:var(--grey);text-decoration:line-through}
-  .task-tags{margin-top:5px;display:flex;flex-wrap:wrap;gap:4px}
-  .xtag{font-size:8px;letter-spacing:.5px;text-transform:uppercase;color:var(--red);
-    border:1px solid var(--red-line);border-radius:3px;padding:1px 5px;background:var(--red-soft);font-weight:600}
+  .task-tags{margin-top:6px;display:flex;flex-wrap:wrap;gap:4px}
+  .xtag{font-size:8px;letter-spacing:.5px;text-transform:uppercase;color:var(--red);border:1px solid var(--red-line);border-radius:3px;padding:1px 5px;background:#fff;font-weight:600}
+  .addedtag{font-size:8px;letter-spacing:.5px;text-transform:uppercase;color:var(--ink2);border:1px solid var(--line2);border-radius:3px;padding:1px 5px;background:#fff;font-weight:600}
   .task-mini{margin-top:6px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:10.5px;color:var(--grey)}
   .task-mini .who{color:var(--ink2);font-weight:500}
   .task-mini .dl.soon{color:var(--red);font-weight:700}
-  .sdot{width:7px;height:7px;border-radius:50%;flex:none}
-  .cd-done{background:var(--green)}.cd-prog{background:var(--amber)}.cd-next{background:var(--red)}.cd-todo{background:var(--grey2)}
-
+  .sdot{width:7px;height:7px;border-radius:50%;flex:none;border:1px solid rgba(0,0,0,.15)}
+  .cd-done{background:var(--green)}.cd-prog{background:var(--amber)}.cd-next{background:var(--red)}.cd-todo{background:var(--blue)}
   .task-exp{max-height:0;overflow:hidden;transition:max-height .22s ease}
-  .task.open .task-exp{max-height:400px}
-  .task-exp-in{padding:10px;border-top:1px solid var(--line)}
-  .task-desc{font-size:11.5px;color:var(--ink2);line-height:1.55;margin-bottom:10px}
+  .task.open .task-exp{max-height:480px}
+  .task-exp-in{padding:11px;border-top:1px solid rgba(0,0,0,.06)}
+  .task-desc{font-size:11.5px;color:var(--ink2);line-height:1.55;margin-bottom:11px}
   .fld{margin-bottom:9px}
   .fld label{display:block;font-size:8.5px;letter-spacing:1px;text-transform:uppercase;color:var(--grey);margin-bottom:4px;font-weight:600}
-  .fld select,.fld input{width:100%;background:#fff;color:var(--ink);border:1px solid var(--line2);
-    border-radius:5px;padding:7px 8px;font-size:12.5px;font-family:var(--sans)}
-  .fld select:focus,.fld input:focus{outline:none;border-color:var(--red)}
+  .fld select,.fld input,.fld textarea{width:100%;background:#fff;color:var(--ink);border:1px solid var(--line2);border-radius:5px;padding:7px 8px;font-size:12.5px;font-family:var(--sans)}
+  .fld select:focus,.fld input:focus,.fld textarea:focus{outline:none;border-color:var(--red)}
   .fld-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-
-  /* cross-cutting detail */
-  .crossband{margin:6px 0 30px;border:1px solid var(--red-line);border-radius:10px;background:var(--card)}
+  .task-actions{margin-top:9px;display:flex;justify-content:flex-end}
+  .del{font-size:10.5px;color:var(--red);background:#fff;border:1px solid var(--red-line);border-radius:5px;padding:5px 10px;cursor:pointer;font-weight:600}
+  .del:hover{background:var(--red-soft)}
+  .newform{border:1px solid var(--red-line);border-radius:8px;background:#fff;padding:11px;display:none}
+  .newform.show{display:block}
+  .newform .fld{margin-bottom:8px}
+  .newform .row{display:flex;gap:7px;margin-top:4px}
+  .newform .row .btn2{flex:1;font-size:11px;font-weight:600;padding:8px;border-radius:6px;cursor:pointer;border:1px solid var(--line2);background:#fff;color:var(--ink2)}
+  .newform .row .btn2.pri{background:var(--red);color:#fff;border-color:var(--red)}
+  .crossband{margin:8px 0 30px;border:1px solid var(--red-line);border-radius:10px;background:var(--card)}
   .crossband .chd{padding:13px 16px;border-bottom:1px solid var(--line)}
   .crossband .chd .e{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--red);font-weight:700;margin-bottom:4px}
   .crossband .chd h3{font-family:var(--serif);font-weight:400;font-size:18px}
@@ -147,31 +135,23 @@
   .ccard h4{font-size:12px;margin-bottom:5px}
   .ccard p{font-size:11px;color:var(--ink2);line-height:1.5}
   .ccard .runs{font-size:8.5px;letter-spacing:.5px;text-transform:uppercase;color:var(--red);margin-top:8px;display:block;font-weight:600}
-
   footer{padding:20px 0 40px;text-align:center;border-top:1px solid var(--line);color:var(--grey)}
   footer .meta{font-size:11px;line-height:1.7}
   footer .meta b{color:var(--ink2)}
-
-  .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(20px);
-    background:var(--ink);color:#fff;font-size:12px;font-weight:600;padding:9px 16px;border-radius:100px;
-    opacity:0;transition:.22s;pointer-events:none;z-index:200;display:flex;align-items:center;gap:8px}
+  .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;font-size:12px;font-weight:600;padding:9px 16px;border-radius:100px;opacity:0;transition:.22s;pointer-events:none;z-index:200;display:flex;align-items:center;gap:8px}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
   .toast .d{width:7px;height:7px;border-radius:50%;background:#22c55e}
   .toast.err .d{background:var(--red)}
-
   @media(max-width:900px){.ov-body{grid-template-columns:1fr 1fr}.tb-stats{width:100%;margin-left:0}}
-  @media print{header.top,.toolbar,.filters,.btn,.syncpill,.toast{position:static}
-    body{background:#fff}.boardscroll{overflow:visible}.board{min-width:0;grid-template-columns:1fr}}
+  @media print{header.top,.toolbar,.filters,.btn,.syncpill,.toast,.addbtn,.newform{position:static}body{background:#fff}.boardscroll{overflow:visible}.board{min-width:0;grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 
 <header class="top">
   <div class="wrap top-inner">
-    <div class="logo">
-      <div class="logo-tile">orn</div>
-      <div class="logo-txt"><div class="a">EUROPE</div><div class="b">Delivery Board</div></div>
-    </div>
+    <div class="logo"><div class="logo-tile">orn</div>
+      <div class="logo-txt"><div class="a">EUROPE</div><div class="b">Delivery Board</div></div></div>
     <div class="top-right">
       <div class="syncpill"><span class="syncdot" id="syncdot"></span><span id="synctext">Connecting…</span></div>
       <button class="btn" onclick="window.print()">Print</button>
@@ -185,7 +165,7 @@
     <div class="tb-title">Five lanes, <b>one operation.</b></div>
     <div class="filters" id="filters">
       <span class="fchip active" data-f="all" onclick="setFilter('all')">All</span>
-      <span class="fchip r" data-f="next" onclick="setFilter('next')">Waiting on us</span>
+      <span class="fchip r" data-f="next" onclick="setFilter('next')">Internal</span>
       <span class="fchip" data-f="prog" onclick="setFilter('prog')">In progress</span>
       <span class="fchip" data-f="todo" onclick="setFilter('todo')">To start</span>
       <span class="fchip" data-f="done" onclick="setFilter('done')">Done</span>
@@ -198,8 +178,7 @@
 <div class="ov" id="ov">
   <div class="wrap ov-inner">
     <div class="ov-head" onclick="document.getElementById('ov').classList.toggle('collapsed')">
-      <span>Overview — all five lanes</span><span class="tgl">show / hide ▾</span>
-    </div>
+      <span>Overview — all five lanes</span><span class="tgl">show / hide ▾</span></div>
     <div class="ov-body" id="ovBody"></div>
     <div class="ov-cross">
       <span class="lab">◆ Cross-cutting</span>
@@ -214,6 +193,16 @@
 </div>
 
 <div class="wrap">
+  <div class="key">
+    <span class="lbl">Status</span>
+    <span class="dot"><i class="kk-todo"></i>To Start</span>
+    <span class="dot"><i class="kk-prog"></i>In Progress</span>
+    <span class="dot"><i class="kk-next"></i>Internal</span>
+    <span class="dot"><i class="kk-done"></i>Done</span>
+    <span class="lbl" style="margin-left:10px">Cross-lane</span>
+    <span class="xtag">◆ thread</span>
+  </div>
+
   <div class="boardscroll"><div class="board" id="board"></div></div>
 
   <div class="crossband">
@@ -237,10 +226,9 @@
 
 <div class="toast" id="toast"><span class="d"></span><span id="toasttxt">Saved</span></div>
 
-<!-- Firebase (Realtime Database, live sync) -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getDatabase, ref, onValue, set, update, remove }
+import { getDatabase, ref, onValue, update, remove, set }
   from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 const firebaseConfig = {
@@ -252,15 +240,14 @@ const firebaseConfig = {
   messagingSenderId: "130842489297",
   appId: "1:130842489297:web:5a554ef0691b42182330f0"
 };
+const EDITS_PATH = "orn_board/europe_delivery/tasks";
+const ADDED_PATH = "orn_board/europe_delivery/added";
 
-const BOARD_PATH = "orn_board/europe_delivery/tasks"; // namespaced — won't touch other data
-
-/* ---------- DATA MODEL ---------- */
 const OWNERS = ["Ajay Kawa","Raj Kumar","Ken Newton","Tim Windsor","Suman Sethi",
   "Michael (Cruise)","Transport Director","Kiran (TripFactory)","Sahil Nijhawan",
   "Stephen Carlin","Fraser (SH)","Chloe (IHG)","Jonathan (Addison Lee)","Product Team","Unassigned"];
 const STATUSES=[{k:"todo",label:"To Start"},{k:"prog",label:"In Progress"},
-  {k:"next",label:"Next / Waiting on Us"},{k:"done",label:"Done"}];
+  {k:"next",label:"Internal"},{k:"done",label:"Done"}];
 
 const LANES=[
  {id:"L1",n:"1",title:"ORN Europe — Foundation & Core DMC",
@@ -319,84 +306,82 @@ const LANES=[
   ]}
 ];
 
-/* ---------- FIREBASE (initialised at end, after all declarations) ---------- */
 let db=null, connected=false;
-let EDITS={};            // { taskId: {status,owner,deadline} }
-const LOCAL_KEY="orn_board_fb_cache";
+let EDITS={}, ADDED={};
+const LKEY="orn_board_v4_cache";
+const OPEN={};
+let FILTER="all";
+
+function cacheSave(){localStorage.setItem(LKEY,JSON.stringify({EDITS,ADDED}))}
+function cacheLoad(){try{const c=JSON.parse(localStorage.getItem(LKEY));if(c){EDITS=c.EDITS||{};ADDED=c.ADDED||{}}}catch(e){}}
 
 function initFirebase(){
   try{
     const app=initializeApp(firebaseConfig);
     db=getDatabase(app);
-    const tasksRef=ref(db,BOARD_PATH);
-    onValue(tasksRef,(snap)=>{
-      connected=true;setSync(true);
-      EDITS=snap.val()||{};
-      localStorage.setItem(LOCAL_KEY,JSON.stringify(EDITS));
-      render();
-    },(err)=>{
-      setSync(false);
-      EDITS=JSON.parse(localStorage.getItem(LOCAL_KEY)||"{}");
-      render();
-      console.warn("Firebase read error:",err.message);
-    });
-  }catch(e){
-    setSync(false);
-    EDITS=JSON.parse(localStorage.getItem(LOCAL_KEY)||"{}");
-    render();
-    console.warn("Firebase init failed:",e.message);
-  }
+    onValue(ref(db,EDITS_PATH),(snap)=>{connected=true;setSync(true);EDITS=snap.val()||{};cacheSave();render();},
+      (err)=>{setSync(false);cacheLoad();render();console.warn("edits read error",err.message);});
+    onValue(ref(db,ADDED_PATH),(snap)=>{ADDED=snap.val()||{};cacheSave();render();},
+      (err)=>{console.warn("added read error",err.message);});
+  }catch(e){setSync(false);cacheLoad();render();console.warn("init failed",e.message);}
 }
 
-function persist(tid){
-  const val=EDITS[tid]||{};
-  localStorage.setItem(LOCAL_KEY,JSON.stringify(EDITS));
-  if(db && connected){
-    update(ref(db,BOARD_PATH+"/"+tid),val)
-      .then(()=>toast("Saved"))
-      .catch(err=>{setSync(false);toast("Saved locally (offline)",true)});
-  }else{
-    toast("Saved locally",true);
-  }
+function persistEdit(tid){
+  cacheSave();
+  if(db&&connected){update(ref(db,EDITS_PATH+"/"+tid),EDITS[tid]||{}).then(()=>toast("Saved")).catch(()=>{setSync(false);toast("Saved locally",true)});}
+  else toast("Saved locally",true);
 }
-
-function setSync(on){
-  const d=document.getElementById("syncdot"),t=document.getElementById("synctext");
-  if(!d)return;
-  d.className="syncdot "+(on?"on":"off");
-  t.textContent=on?"Live · synced":"Offline · local only";
+function persistAdded(laneId,newId){
+  cacheSave();
+  if(db&&connected){set(ref(db,ADDED_PATH+"/"+laneId+"/"+newId),ADDED[laneId][newId]).then(()=>toast("Task added")).catch(()=>{setSync(false);toast("Added locally",true)});}
+  else toast("Added locally",true);
 }
+function removeAdded(laneId,newId){
+  if(ADDED[laneId])delete ADDED[laneId][newId];
+  cacheSave();
+  if(db&&connected){remove(ref(db,ADDED_PATH+"/"+laneId+"/"+newId)).then(()=>toast("Removed")).catch(()=>toast("Removed locally",true));}
+  render();
+}
+function setSync(on){const d=document.getElementById("syncdot"),t=document.getElementById("synctext");
+  if(!d)return;d.className="syncdot "+(on?"on":"off");t.textContent=on?"Live · synced":"Offline · local only";}
 
-/* ---------- STATE HELPERS ---------- */
-function val(t,f){ if(EDITS[t.id]&&EDITS[t.id][f]!==undefined) return EDITS[t.id][f]; return t["_"+f]!==undefined?t["_"+f]:t[f]; }
 function statusOf(t){return (EDITS[t.id]&&EDITS[t.id].status)||t.status}
 function ownerOf(t){return (EDITS[t.id]&&EDITS[t.id].owner)||t.owner}
 function dlOf(t){return (EDITS[t.id]&&EDITS[t.id].deadline!==undefined)?EDITS[t.id].deadline:t.deadline}
-const OPEN={};
+function tasksFor(lane){
+  const added=ADDED[lane.id]?Object.entries(ADDED[lane.id]).map(([id,v])=>({id,ttl:v.ttl,owner:v.owner,status:v.status,deadline:v.deadline||"",desc:v.desc||"",tags:[],added:true})):[];
+  return lane.tasks.concat(added);
+}
 
-window.setVal=function(tid,field,value){
-  if(!EDITS[tid])EDITS[tid]={};
-  EDITS[tid][field]=value;
-  persist(tid);
-  render();
-};
+window.setVal=function(tid,field,value){if(!EDITS[tid])EDITS[tid]={};EDITS[tid][field]=value;persistEdit(tid);render();};
 window.toggle=function(tid){OPEN[tid]=!OPEN[tid];render();};
 window.resetBoard=function(){
-  if(!confirm("Reset ALL status, owner and deadline edits back to plan defaults? This clears the shared saved copy."))return;
-  EDITS={};
-  localStorage.removeItem(LOCAL_KEY);
-  if(db&&connected){ remove(ref(db,BOARD_PATH)).then(()=>toast("Reset")).catch(()=>toast("Reset locally",true)); }
+  if(!confirm("Reset ALL edits and remove ALL added tasks, back to the baseline plan? This clears the shared saved copy."))return;
+  EDITS={};ADDED={};localStorage.removeItem(LKEY);
+  if(db&&connected){remove(ref(db,EDITS_PATH));remove(ref(db,ADDED_PATH)).then(()=>toast("Reset")).catch(()=>toast("Reset locally",true));}
   render();
 };
-
-let FILTER="all";
-window.setFilter=function(f){FILTER=f;
-  document.querySelectorAll(".fchip").forEach(c=>c.classList.toggle("active",c.dataset.f===f));
-  document.querySelectorAll('.fchip.r').forEach(c=>{if(c.dataset.f===f)c.classList.add('active')});
-  render();
+window.setFilter=function(f){FILTER=f;document.querySelectorAll(".fchip").forEach(c=>c.classList.toggle("active",c.dataset.f===f));render();};
+window.showAddForm=function(laneId){
+  document.querySelectorAll(".newform").forEach(f=>f.classList.remove("show"));
+  const f=document.getElementById("nf-"+laneId);if(f){f.classList.add("show");f.querySelector(".nf-ttl").focus();}
 };
+window.cancelAdd=function(laneId){const f=document.getElementById("nf-"+laneId);if(f)f.classList.remove("show");};
+window.saveAdd=function(laneId){
+  const f=document.getElementById("nf-"+laneId);
+  const ttl=f.querySelector(".nf-ttl").value.trim();
+  if(!ttl){f.querySelector(".nf-ttl").focus();return;}
+  const owner=f.querySelector(".nf-owner").value;
+  const status=f.querySelector(".nf-status").value;
+  const deadline=f.querySelector(".nf-dl").value;
+  const desc=f.querySelector(".nf-desc").value.trim();
+  const newId="a"+Date.now().toString(36)+Math.floor(Math.random()*1000);
+  if(!ADDED[laneId])ADDED[laneId]={};
+  ADDED[laneId][newId]={ttl,owner,status,deadline,desc};
+  persistAdded(laneId,newId);render();
+};
+window.deleteAdded=function(laneId,tid){if(confirm("Delete this added task?"))removeAdded(laneId,tid);};
 
-/* ---------- RENDER ---------- */
 function statusMeta(k){return STATUSES.find(s=>s.k===k)||STATUSES[0]}
 function dlSoon(d){if(!d)return false;const days=(new Date(d+"T00:00:00")-new Date())/86400000;return days<=7&&days>=-3650}
 function fmtDate(d){if(!d)return"No deadline";return new Date(d+"T00:00:00").toLocaleDateString("en-GB",{day:"numeric",month:"short"})}
@@ -410,14 +395,15 @@ function render(){
   board.innerHTML="";
   LANES.forEach(lane=>{
     const el=document.createElement("div");el.className="lane";el.id=lane.id;
+    const list=tasksFor(lane);
     let body="";
-    lane.tasks.forEach(t=>{
+    list.forEach(t=>{
       const st=statusOf(t),ow=ownerOf(t),dl=dlOf(t),open=!!OPEN[t.id];
-      const hide=!matchFilter(t);
-      const sm=statusMeta(st);
-      const tags=t.tags.map(x=>`<span class="xtag">${x}</span>`).join("");
+      const hide=!matchFilter(t);const sm=statusMeta(st);
+      const tags=(t.tags||[]).map(x=>`<span class="xtag">${x}</span>`).join("")+(t.added?`<span class="addedtag">Added</span>`:"");
       const optOwner=OWNERS.map(o=>`<option ${o===ow?"selected":""}>${o}</option>`).join("");
       const optStatus=STATUSES.map(s=>`<option value="${s.k}" ${s.k===st?"selected":""}>${s.label}</option>`).join("");
+      const delBtn=t.added?`<div class="task-actions"><button class="del" onclick="deleteAdded('${lane.id}','${t.id}')">Delete task</button></div>`:"";
       body+=`<div class="task s-${st} ${open?"open":""} ${hide?"hidden":""}">
         <div class="task-top" onclick="toggle('${t.id}')">
           <div class="caret">▶</div>
@@ -430,7 +416,7 @@ function render(){
           </div>
         </div>
         <div class="task-exp"><div class="task-exp-in">
-          <div class="task-desc">${t.desc}</div>
+          ${t.desc?`<div class="task-desc">${t.desc}</div>`:""}
           <div class="fld"><label>Status</label>
             <select onchange="setVal('${t.id}','status',this.value)">${optStatus}</select></div>
           <div class="fld-row">
@@ -439,9 +425,24 @@ function render(){
             <div class="fld"><label>Deadline</label>
               <input type="date" value="${dl||''}" onchange="setVal('${t.id}','deadline',this.value)"></div>
           </div>
+          ${delBtn}
         </div></div>
       </div>`;
     });
+    const optOwnerNew=OWNERS.map(o=>`<option ${o==='Unassigned'?'selected':''}>${o}</option>`).join("");
+    const optStatusNew=STATUSES.map(s=>`<option value="${s.k}" ${s.k==='todo'?'selected':''}>${s.label}</option>`).join("");
+    body+=`<button class="addbtn" onclick="showAddForm('${lane.id}')">+ Add task</button>
+      <div class="newform" id="nf-${lane.id}">
+        <div class="fld"><label>Task</label><input class="nf-ttl" type="text" placeholder="Task title"></div>
+        <div class="fld"><label>Detail (optional)</label><textarea class="nf-desc" rows="2" placeholder="Short description"></textarea></div>
+        <div class="fld-row">
+          <div class="fld"><label>Owner</label><select class="nf-owner">${optOwnerNew}</select></div>
+          <div class="fld"><label>Status</label><select class="nf-status">${optStatusNew}</select></div>
+        </div>
+        <div class="fld"><label>Deadline</label><input class="nf-dl" type="date"></div>
+        <div class="row"><button class="btn2" onclick="cancelAdd('${lane.id}')">Cancel</button>
+          <button class="btn2 pri" onclick="saveAdd('${lane.id}')">Add task</button></div>
+      </div>`;
     el.innerHTML=`<div class="lane-hd"><div class="ln">Lane ${lane.n}</div>
       <div class="lt">${lane.title}</div><div class="lo">${lane.owner}</div></div>
       <div class="lane-body">${body}</div>`;
@@ -450,31 +451,34 @@ function render(){
   renderStats();renderOverview();
 }
 
-function allTasks(){return LANES.flatMap(l=>l.tasks)}
+function allTasks(){return LANES.flatMap(l=>tasksFor(l))}
 function renderStats(){
-  const all=allTasks(),total=all.length;
+  const all=allTasks(),total=all.length||1;
   const d=all.filter(t=>statusOf(t)==="done").length;
   const p=all.filter(t=>statusOf(t)==="prog").length;
   const n=all.filter(t=>statusOf(t)==="next").length;
+  const to=all.filter(t=>statusOf(t)==="todo").length;
   const pct=Math.round(d/total*100);
   document.getElementById("stats").innerHTML=`
-    <div class="stat"><span class="n red">${n}</span><span class="l">Waiting</span></div>
+    <div class="stat"><span class="n red">${n}</span><span class="l">Internal</span></div>
     <div class="stat"><span class="n amber">${p}</span><span class="l">In progress</span></div>
+    <div class="stat"><span class="n blue">${to}</span><span class="l">To start</span></div>
     <div class="stat"><span class="n green">${d}</span><span class="l">Done</span></div>
     <div class="stat"><span class="n">${pct}%</span><span class="l">Complete</span></div>
     <div class="progressbar"><i class="pb-d" style="width:${d/total*100}%"></i>
-      <i class="pb-p" style="width:${p/total*100}%"></i><i class="pb-n" style="width:${n/total*100}%"></i></div>`;
+      <i class="pb-p" style="width:${p/total*100}%"></i><i class="pb-n" style="width:${n/total*100}%"></i>
+      <i class="pb-t" style="width:${to/total*100}%"></i></div>`;
 }
 function renderOverview(){
   const ov=document.getElementById("ovBody");ov.innerHTML="";
   LANES.forEach(lane=>{
-    const total=lane.tasks.length;
-    const d=lane.tasks.filter(t=>statusOf(t)==="done").length;
-    const p=lane.tasks.filter(t=>statusOf(t)==="prog").length;
-    const n=lane.tasks.filter(t=>statusOf(t)==="next").length;
+    const list=tasksFor(lane),total=list.length||1;
+    const d=list.filter(t=>statusOf(t)==="done").length;
+    const p=list.filter(t=>statusOf(t)==="prog").length;
+    const n=list.filter(t=>statusOf(t)==="next").length;
     const short=lane.title.split("—")[0].trim();
     ov.innerHTML+=`<a class="ovlane" href="#${lane.id}"><div class="n">${lane.n}</div>
-      <div class="t">${short}</div><div class="m">${total} tasks · ${d} done · ${n} waiting</div>
+      <div class="t">${short}</div><div class="m">${list.length} tasks · ${d} done · ${n} internal</div>
       <div class="b"><i class="pb-d" style="width:${d/total*100}%"></i>
       <i class="pb-p" style="width:${p/total*100}%"></i><i class="pb-n" style="width:${n/total*100}%"></i></div></a>`;
   });
@@ -485,9 +489,8 @@ function toast(msg,err){const el=document.getElementById("toast");
   document.getElementById("toasttxt").textContent=msg;
   el.classList.toggle("err",!!err);el.classList.add("show");
   clearTimeout(toastT);toastT=setTimeout(()=>el.classList.remove("show"),1400);}
-window._toast=toast;
 
-/* boot: paint defaults immediately, then connect Firebase for live data */
+cacheLoad();
 render();
 initFirebase();
 </script>
