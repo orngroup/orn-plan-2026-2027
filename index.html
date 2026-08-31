@@ -22,7 +22,7 @@
   *{box-sizing:border-box;margin:0;padding:0}
   html{scroll-behavior:smooth}
   body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
-  .wrap{max-width:1680px;margin:0 auto;padding:0 20px}
+  .wrap{max-width:1920px;margin:0 auto;padding:0 16px}
   header.top{background:var(--header);border-bottom:3px solid var(--red);position:sticky;top:0;z-index:100}
   .top-inner{display:flex;align-items:center;justify-content:space-between;height:56px}
   .logo{display:flex;align-items:center;gap:11px}
@@ -69,7 +69,7 @@
   .ov-cross{margin-top:8px;border:1px dashed var(--red-line);border-radius:8px;background:var(--red-soft);padding:9px 12px;display:flex;gap:7px;flex-wrap:wrap;align-items:center}
   .ov-cross .lab{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--red);font-weight:700}
   .ov-cross .chip{font-size:10px;color:var(--ink2);background:#fff;border:1px solid var(--red-line);border-radius:100px;padding:3px 9px}
-  .key{display:flex;flex-wrap:wrap;gap:14px;align-items:center;padding:11px 0 3px}
+  .key{display:flex;flex-wrap:wrap;gap:14px;align-items:center;padding:8px 0 0}
   .key .lbl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--grey2)}
   .key .dot{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--ink2)}
   .key .dot i{width:12px;height:12px;border-radius:3px;display:inline-block;border:1px solid}
@@ -77,15 +77,15 @@
   .kk-prog{background:var(--t-prog);border-color:var(--t-prog-b)}
   .kk-next{background:var(--t-next);border-color:var(--t-next-b)}
   .kk-done{background:var(--t-done);border-color:var(--t-done-b)}
-  .boardscroll{overflow-x:auto;padding:12px 0 26px}
-  .board{display:grid;grid-template-columns:repeat(5,minmax(300px,1fr));gap:12px;min-width:1580px;align-items:start}
-  .lane{display:flex;flex-direction:column}
-  .lane-hd{padding:12px 13px;border:1px solid var(--line);border-top:3px solid var(--red);border-radius:9px 9px 0 0;background:var(--card);position:sticky;top:103px;z-index:5}
+  .boardscroll{overflow-x:auto;padding:4px 0 26px}
+  .board{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;align-items:start}
+  .lane{display:flex;flex-direction:column;min-width:0}
+  .lane-hd{padding:12px 13px;border:1px solid var(--line);border-top:3px solid var(--red);border-radius:9px 9px 0 0;background:var(--card)}
   .lane-hd .ln{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--red);font-weight:700}
   .lane-hd .lt{font-size:14px;font-weight:700;margin:3px 0 4px;line-height:1.25}
   .lane-hd .lo{font-size:10.5px;color:var(--grey);line-height:1.5}
   .lane-hd .lo b{color:var(--ink2)}
-  .lane-body{padding:10px;border:1px solid var(--line);border-top:none;border-radius:0 0 9px 9px;background:var(--card2);display:flex;flex-direction:column;gap:9px;flex:1}
+  .lane-body{padding:8px;border:1px solid var(--line);border-top:none;border-radius:0 0 9px 9px;background:var(--card2);display:flex;flex-direction:column;gap:7px;flex:1}
   .addbtn{margin-top:2px;padding:9px;border:1px dashed var(--line2);border-radius:8px;background:transparent;color:var(--grey);font-size:12px;font-weight:600;cursor:pointer;transition:.12s;text-align:center}
   .addbtn:hover{border-color:var(--red-line);color:var(--red);background:#fff}
   .task{border-radius:8px;border:1px solid var(--line);border-left-width:3px;transition:.12s;background:var(--card)}
@@ -94,15 +94,15 @@
   .task.s-next{background:var(--t-next);border-color:var(--t-next-b);border-left-color:var(--red)}
   .task.s-done{background:var(--t-done);border-color:var(--t-done-b);border-left-color:var(--green)}
   .task.hidden{display:none}
-  .task-top{padding:10px 11px;cursor:pointer;display:flex;gap:8px;align-items:flex-start}
-  .caret{flex:none;width:14px;color:var(--grey);transition:.2s;font-size:10px;line-height:16px;text-align:center}
+  .task-top{padding:8px 10px;cursor:pointer;display:flex;gap:7px;align-items:flex-start}
+  .caret{flex:none;width:12px;color:var(--grey);transition:.2s;font-size:9px;line-height:15px;text-align:center}
   .task.open .caret{transform:rotate(90deg);color:var(--red)}
-  .task-ttl{font-size:13px;font-weight:600;line-height:1.32;color:var(--ink)}
+  .task-ttl{font-size:12px;font-weight:600;line-height:1.28;color:var(--ink)}
   .task.s-done .task-ttl{color:var(--grey);text-decoration:line-through}
-  .task-tags{margin-top:6px;display:flex;flex-wrap:wrap;gap:4px}
+  .task-tags{margin-bottom:9px;display:flex;flex-wrap:wrap;gap:4px}
   .xtag{font-size:8px;letter-spacing:.5px;text-transform:uppercase;color:var(--red);border:1px solid var(--red-line);border-radius:3px;padding:1px 5px;background:#fff;font-weight:600}
   .addedtag{font-size:8px;letter-spacing:.5px;text-transform:uppercase;color:var(--ink2);border:1px solid var(--line2);border-radius:3px;padding:1px 5px;background:#fff;font-weight:600}
-  .task-mini{margin-top:6px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:10.5px;color:var(--grey)}
+  .task-mini{margin-top:4px;display:flex;align-items:center;gap:5px;flex-wrap:wrap;font-size:10px;color:var(--grey)}
   .task-mini .who{color:var(--ink2);font-weight:500}
   .task-mini .dl.soon{color:var(--red);font-weight:700}
   .sdot{width:7px;height:7px;border-radius:50%;flex:none;border:1px solid rgba(0,0,0,.15)}
@@ -407,15 +407,15 @@ function render(){
       body+=`<div class="task s-${st} ${open?"open":""} ${hide?"hidden":""}">
         <div class="task-top" onclick="toggle('${t.id}')">
           <div class="caret">▶</div>
-          <div style="flex:1">
+          <div style="flex:1;min-width:0">
             <div class="task-ttl">${t.ttl}</div>
-            ${tags?`<div class="task-tags">${tags}</div>`:""}
-            <div class="task-mini"><span class="sdot cd-${st}"></span><span>${sm.label}</span>
-              <span class="who">· ${ow}</span>
+            <div class="task-mini"><span class="sdot cd-${st}"></span>
+              <span class="who">${ow}</span>
               <span class="dl ${dlSoon(dl)&&st!=='done'?'soon':''}">· ${fmtDate(dl)}</span></div>
           </div>
         </div>
         <div class="task-exp"><div class="task-exp-in">
+          ${tags?`<div class="task-tags">${tags}</div>`:""}
           ${t.desc?`<div class="task-desc">${t.desc}</div>`:""}
           <div class="fld"><label>Status</label>
             <select onchange="setVal('${t.id}','status',this.value)">${optStatus}</select></div>
