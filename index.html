@@ -77,7 +77,7 @@
   .kk-prog{background:var(--t-prog);border-color:var(--t-prog-b)}
   .kk-next{background:var(--t-next);border-color:var(--t-next-b)}
   .kk-done{background:var(--t-done);border-color:var(--t-done-b)}
-  .boardscroll{overflow-x:auto;padding:4px 0 26px}
+  .boardscroll{overflow-x:auto;padding:8px 0 26px}
   .board{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;align-items:start}
   .lane{display:flex;flex-direction:column;min-width:0}
   .lane-hd{padding:12px 13px;border:1px solid var(--line);border-top:3px solid var(--red);border-radius:9px 9px 0 0;background:var(--card)}
@@ -107,8 +107,13 @@
   .task-mini .dl.soon{color:var(--red);font-weight:700}
   .sdot{width:7px;height:7px;border-radius:50%;flex:none;border:1px solid rgba(0,0,0,.15)}
   .cd-done{background:var(--green)}.cd-prog{background:var(--amber)}.cd-next{background:var(--red)}.cd-todo{background:var(--blue)}
+  /* move arrows */
+  .movecol{flex:none;display:flex;flex-direction:column;gap:2px;padding-top:1px}
+  .mv{width:16px;height:14px;border:none;background:transparent;color:var(--grey2);cursor:pointer;font-size:9px;line-height:1;padding:0;border-radius:3px}
+  .mv:hover{color:var(--red);background:rgba(0,0,0,.04)}
+  .mv:disabled{opacity:.25;cursor:default}
   .task-exp{max-height:0;overflow:hidden;transition:max-height .22s ease}
-  .task.open .task-exp{max-height:480px}
+  .task.open .task-exp{max-height:520px}
   .task-exp-in{padding:11px;border-top:1px solid rgba(0,0,0,.06)}
   .task-desc{font-size:11.5px;color:var(--ink2);line-height:1.55;margin-bottom:11px}
   .fld{margin-bottom:9px}
@@ -143,7 +148,7 @@
   .toast .d{width:7px;height:7px;border-radius:50%;background:#22c55e}
   .toast.err .d{background:var(--red)}
   @media(max-width:900px){.ov-body{grid-template-columns:1fr 1fr}.tb-stats{width:100%;margin-left:0}}
-  @media print{header.top,.toolbar,.filters,.btn,.syncpill,.toast,.addbtn,.newform{position:static}body{background:#fff}.boardscroll{overflow:visible}.board{min-width:0;grid-template-columns:1fr}}
+  @media print{header.top,.toolbar,.filters,.btn,.syncpill,.toast,.addbtn,.newform,.movecol{position:static;display:none}body{background:#fff}.boardscroll{overflow:visible}.board{min-width:0;grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -182,7 +187,7 @@
     <div class="ov-body" id="ovBody"></div>
     <div class="ov-cross">
       <span class="lab">◆ Cross-cutting</span>
-      <span class="chip">Foundation · ABTA · PTE funding · bank · VAT</span>
+      <span class="chip">Foundation · UTR → VAT → shareholding · UK float</span>
       <span class="chip">Data Pack · volumes &amp; mix</span>
       <span class="chip">NDA</span>
       <span class="chip">Systems · NX/OS · Nexus · Zoho</span>
@@ -209,7 +214,7 @@
     <div class="chd"><div class="e">◆ Runs across all lanes</div>
       <h3>The threads that <em>tie every lane together.</em></h3></div>
     <div class="ccgrid">
-      <div class="ccard"><h4>Corporate &amp; Licensing Foundation</h4><p>ABTA (own application), ATOL if triggered, ORN Nexus PTE shareholding &amp; funding, UK bank, share structure, VAT.</p><span class="runs">Gates: Lanes 1·2·3·4</span></div>
+      <div class="ccard"><h4>Corporate &amp; Licensing Foundation</h4><p>Sequenced: UTR first, then VAT, then shareholding. ABTA (own application), ATOL if triggered. UK float to run the office.</p><span class="runs">Gates: Lanes 1·2·3·4</span></div>
       <div class="ccard"><h4>Forecast Volume &amp; Data Pack</h4><p>One master set of passenger volumes, segment mix &amp; accommodation spend. Build once, reuse for AL, IHG, cruise, product.</p><span class="runs">Feeds: Lanes 2·4·5</span></div>
       <div class="ccard"><h4>NDA Process</h4><p>Standard mutual NDA held ready — required before detailed figures pass to Addison Lee, IHG, Sports Hotel.</p><span class="runs">Unblocks: Lanes 4·5</span></div>
       <div class="ccard"><h4>NX/OS · Nexus · Zoho</h4><p>Ops &amp; Reconfirmation Hub is system of record; Nexus for bookings; Zoho for contracting. One platform, full audit trail.</p><span class="runs">Underpins: all lanes</span></div>
@@ -240,8 +245,8 @@ const firebaseConfig = {
   messagingSenderId: "130842489297",
   appId: "1:130842489297:web:5a554ef0691b42182330f0"
 };
-const EDITS_PATH = "orn_board/europe_delivery/tasks";
-const ADDED_PATH = "orn_board/europe_delivery/added";
+const EDITS_PATH = "orn_board/europe_delivery/tasks";   // {taskId:{status,owner,deadline,order,deleted}}
+const ADDED_PATH = "orn_board/europe_delivery/added";   // {laneId:{newId:{ttl,owner,status,deadline,desc,order}}}
 
 const OWNERS = ["Ajay Kawa","Raj Kumar","Ken Newton","Tim Windsor","Suman Sethi",
   "Michael (Cruise)","Transport Director","Kiran (TripFactory)","Sahil Nijhawan",
@@ -253,22 +258,24 @@ const LANES=[
  {id:"L1",n:"1",title:"ORN Europe — Foundation & Core DMC",
   owner:"Lead: <b>Ajay Kawa</b> · Ops: <b>Ken Newton, Tim Windsor, Suman Sethi</b>",
   tasks:[
-   {id:"t11",ttl:"Submit ABTA application in ORN Europe Ltd's own name",owner:"Ajay Kawa",status:"prog",deadline:"2026-09-05",tags:["◆ Foundation"],desc:"Via Charley Cohen (TIC). Own application route — no acquired licence. ATOL only if an air trigger returns to scope."},
-   {id:"t12",ttl:"Confirm ORN Nexus PTE shareholding & funding line",owner:"Raj Kumar",status:"next",deadline:"2026-09-05",tags:["◆ Foundation"],desc:"Share structure of ORN Europe Ltd, PTE ownership %, start-up float into UK bank and drawdown terms. Raj signs off spend."},
-   {id:"t13",ttl:"Open UK bank account & register for VAT",owner:"Ajay Kawa",status:"next",deadline:"2026-09-08",tags:["◆ Foundation"],desc:"Same-day supplier payment capability from the UK; VAT registration for clean invoicing across the group."},
-   {id:"t14",ttl:"Bed down 6-point QC & reconfirmation process",owner:"Ken Newton",status:"prog",deadline:"",tags:[],desc:"Every booking through the Ops Hub queue, reconfirmed by travel date (operator, phone, confirmation, time, location) before voucher issue."},
-   {id:"t15",ttl:"Recruit Operations Executive",owner:"Ken Newton",status:"todo",deadline:"2026-09-30",tags:[],desc:"Additional capacity on reconfirmation & delivery as volume scales."},
-   {id:"t16",ttl:"Clear Project Expedition / API integration backlog",owner:"Ajay Kawa",status:"prog",deadline:"2026-09-19",tags:["◆ Systems"],desc:"Viator (card enabling), Sun Transfers (EU transfer), Attraction World, Hummingbird certification. Chase Ram / Sahil / Amit."}
+   {id:"t11",ttl:"Register for UTR (first step of corporate setup)",owner:"Ajay Kawa",status:"next",deadline:"2026-09-05",tags:["◆ Foundation"],desc:"UTR must come first. Corporate setup is sequenced: UTR → VAT → shareholding. Nothing downstream proceeds until the UTR is issued."},
+   {id:"t12",ttl:"Register for VAT (after UTR issued)",owner:"Ajay Kawa",status:"todo",deadline:"2026-09-12",tags:["◆ Foundation"],desc:"Second step — only once the UTR is in place. Enables clean invoicing across the group."},
+   {id:"t13",ttl:"Add ORN Nexus PTE shareholding (after UTR & VAT)",owner:"Raj Kumar",status:"todo",deadline:"",tags:["◆ Foundation"],desc:"Share structure and PTE ownership % — deliberately held until UTR and VAT are both confirmed. Do not action before then."},
+   {id:"t14",ttl:"Secure UK float to run the office",owner:"Ajay Kawa",status:"next",deadline:"2026-09-08",tags:["◆ Foundation"],desc:"Working float into the UK bank to cover office running costs and same-day supplier payments while the entity beds in. Raj signs off."},
+   {id:"t15",ttl:"Submit ABTA application in ORN Europe Ltd's own name",owner:"Ajay Kawa",status:"prog",deadline:"2026-09-19",tags:["◆ Foundation"],desc:"Via Charley Cohen (TIC). Own application route — no acquired licence. ATOL only if an air trigger returns to scope."},
+   {id:"t16",ttl:"Bed down 6-point QC & reconfirmation process",owner:"Ken Newton",status:"prog",deadline:"",tags:[],desc:"Every booking through the Ops Hub queue, reconfirmed by travel date (operator, phone, confirmation, time, location) before voucher issue."},
+   {id:"t17",ttl:"Recruit Operations Executive",owner:"Ken Newton",status:"todo",deadline:"2026-09-30",tags:[],desc:"Additional capacity on reconfirmation & delivery as volume scales."},
+   {id:"t18",ttl:"Clear Project Expedition / API integration backlog",owner:"Ajay Kawa",status:"prog",deadline:"2026-09-19",tags:["◆ Systems"],desc:"Viator (card enabling), Sun Transfers (EU transfer), Attraction World, Hummingbird certification. Chase Ram / Sahil / Amit."}
   ]},
  {id:"L2",n:"2",title:"ORN Cruise — Charter Division",
-  owner:"Lead: <b>Michael</b> + Product/Ops Mgr · Oversight: <b>Ajay Kawa / Raj Kumar</b>",
+  owner:"Lead: <b>Michael</b> (commission-based) · Oversight: <b>Ajay Kawa / Raj Kumar</b>",
   tasks:[
-   {id:"t21",ttl:"Agree employment terms, onboarding & decision authority",owner:"Raj Kumar",status:"next",deadline:"2026-09-05",tags:[],desc:"Michael + product/ops manager: terms, benefits, systems, equipment, sign-off limits. Close at the 17:00 mobilisation session."},
-   {id:"t22",ttl:"Lock the 90-day mobilisation plan & success measures",owner:"Michael (Cruise)",status:"next",deadline:"2026-09-08",tags:[],desc:"Define the 3 priority outcomes for the first 90 days; milestones, launch activities and reporting cadence."},
-   {id:"t23",ttl:"Confirm division brand name & positioning",owner:"Ajay Kawa",status:"todo",deadline:"2026-09-12",tags:[],desc:"Standalone cruise brand under ORN — name, identity and positioning for focused destination cruises."},
-   {id:"t24",ttl:"RCG / Celebrity Ascent site visit — Israel · Turkey · Greece · Romania",owner:"Michael (Cruise)",status:"prog",deadline:"2026-09-05",tags:[],desc:"Join RCG International offices on board; widen discussions with close contacts inside RCG."},
-   {id:"t25",ttl:"Open charter & allocation negotiations (RCCL, Uniworld + Evergreen)",owner:"Michael (Cruise)",status:"prog",deadline:"2026-09-26",tags:["◆ Data Pack"],desc:"Focused destination cruises and river product; use the charter calculator to model cost / breakeven."},
-   {id:"t26",ttl:"Build cruise data & volume pack for negotiations",owner:"Ajay Kawa",status:"todo",deadline:"2026-09-19",tags:["◆ Data Pack"],desc:"Source-market demand and group profiles to support charter and allocation asks."}
+   {id:"t21",ttl:"Confirm Michael's commission / profit-share terms (no salary)",owner:"Raj Kumar",status:"next",deadline:"2026-09-05",tags:[],desc:"Michael advised to take no salary; instead develops the product and earns from sales achieved. Agree the commission / profit-share basis, onboarding, systems and sign-off limits."},
+   {id:"t22",ttl:"Focus product on river cruises for Australia",owner:"Michael (Cruise)",status:"next",deadline:"2026-09-12",tags:["◆ Data Pack"],desc:"Prioritise river-cruise product built for the Australia market as the initial revenue focus."},
+   {id:"t23",ttl:"Check charter-cruise appetite with Sahil",owner:"Michael (Cruise)",status:"next",deadline:"2026-09-08",tags:[],desc:"Work the charter-cruise opportunity — confirm appetite and demand with Sahil (ORN Australia) before committing to charter negotiations."},
+   {id:"t24",ttl:"Lock the 90-day mobilisation plan & success measures",owner:"Michael (Cruise)",status:"next",deadline:"2026-09-08",tags:[],desc:"Define the 3 priority outcomes for the first 90 days; milestones, launch activities and reporting cadence."},
+   {id:"t25",ttl:"RCG / Celebrity Ascent site visit — Israel · Turkey · Greece · Romania",owner:"Michael (Cruise)",status:"prog",deadline:"2026-09-05",tags:[],desc:"Join RCG International offices on board; widen discussions with close contacts inside RCG."},
+   {id:"t26",ttl:"Open charter & allocation negotiations (RCCL, Uniworld + Evergreen)",owner:"Michael (Cruise)",status:"prog",deadline:"2026-09-26",tags:["◆ Data Pack"],desc:"Focused destination cruises and river product; use the charter calculator to model cost / breakeven. Gated by Sahil appetite check."}
   ]},
  {id:"L3",n:"3",title:"ORN Transport — Own Fleet, End-to-End",
   owner:"Lead: <b>Transport Director</b> (to hire) · Oversight: <b>Ajay Kawa</b>",
@@ -292,23 +299,23 @@ const LANES=[
    {id:"t47",ttl:"Product — load white-label tours for live sale",owner:"Product Team",status:"prog",deadline:"2026-09-26",tags:["◆ Systems"],desc:"Day-wise itinerary, hotel mapping, occupancy, meals, inclusions, transfers, policies, rates, selling price & live availability."},
    {id:"t48",ttl:"Source DMCs/suppliers ≥10% below market",owner:"Ajay Kawa",status:"todo",deadline:"2026-09-26",tags:["◆ Foundation"],desc:"Hotels, transfers, sightseeing, guides, meals, coaches — to price ME outbound ~10% under competitor selling price."}
   ]},
- {id:"L5",n:"5",title:"Sports Hotel — Groups & FIT + Memberships JV",
-  owner:"Counterparty: <b>Stephen Carlin</b> · <b>Fraser</b> · <b>Richard Ellison</b>",
+ {id:"L5",n:"5",title:"Sports Hotel — Membership & Credit JV",
+  owner:"JV with <b>Stephen Carlin</b> · <b>Fraser</b> · <b>Richard Ellison</b>",
   tasks:[
-   {id:"t51",ttl:"Sign mutual NDA",owner:"Ajay Kawa",status:"next",deadline:"2026-09-05",tags:["◆ NDA"],desc:"Standard ORN form; unlocks membership & booking data exchange for both strands."},
-   {id:"t52",ttl:"Grant Knox platform access — Stephen, Richard, Fraser",owner:"Ajay Kawa",status:"next",deadline:"2026-09-03",tags:[],desc:"Outstanding action from the 25 Aug meeting."},
-   {id:"t53",ttl:"Groups & FIT — Fraser runs a live sample group-booking enquiry",owner:"Fraser (SH)",status:"next",deadline:"2026-09-12",tags:[],desc:"Test the quotation & fulfilment loop end-to-end. FIT is often staff bookings — key to the relationship."},
-   {id:"t54",ttl:"Groups & FIT — review Sports/MICE/FIT operating model",owner:"Ajay Kawa",status:"prog",deadline:"2026-09-19",tags:["◆ Data Pack"],desc:"Map where ORN takes on / supports fulfilment; confirm the ~8% comm / kickback economics and cash-flow handling."},
-   {id:"t55",ttl:"Memberships JV — select one pilot organisation",owner:"Stephen Carlin",status:"next",deadline:"2026-09-12",tags:[],desc:"Candidates incl. Swim England (250k) + imminent 450k deal; or pilot with SH's own database first."},
-   {id:"t56",ttl:"Memberships JV — build branded demo site + member collateral",owner:"Product Team",status:"todo",deadline:"2026-09-26",tags:[],desc:"Customise the membership platform to the pilot org's brand; demonstrate the full member proposition live."},
-   {id:"t57",ttl:"Memberships JV — SH to supply membership & booking data",owner:"Stephen Carlin",status:"next",deadline:"2026-09-19",tags:["◆ NDA"],desc:"Existing memberships, costs/terms, forward-sales potential — to size the ~6m reachable audience opportunity."},
-   {id:"t58",ttl:"Memberships JV — agree structure & revenue share",owner:"Raj Kumar",status:"todo",deadline:"",tags:["◆ Foundation"],desc:"Within SH, a separate entity, or a dedicated partnership; margin split, member credits/rewards & kickback model."}
+   {id:"t51",ttl:"Establish new JV — white-label membership & credit programme",owner:"Ajay Kawa",status:"next",deadline:"2026-09-12",tags:["◆ NDA"],desc:"Refocus: a new JV built around the white-label membership & credit programme distributed to groups. This is the core of the relationship."},
+   {id:"t52",ttl:"Sign mutual NDA",owner:"Ajay Kawa",status:"next",deadline:"2026-09-05",tags:["◆ NDA"],desc:"Standard ORN form; unlocks membership & booking data exchange for the JV."},
+   {id:"t53",ttl:"Select one pilot membership organisation",owner:"Stephen Carlin",status:"next",deadline:"2026-09-12",tags:[],desc:"Candidates incl. Swim England (250k) + imminent 450k deal; or pilot with SH's own database first."},
+   {id:"t54",ttl:"Build branded demo site + member collateral",owner:"Product Team",status:"todo",deadline:"2026-09-26",tags:[],desc:"Customise the membership platform to the pilot org's brand; demonstrate the member credit proposition live."},
+   {id:"t55",ttl:"SH to supply membership & booking data",owner:"Stephen Carlin",status:"next",deadline:"2026-09-19",tags:["◆ NDA"],desc:"Existing memberships, costs/terms, forward-sales potential — to size the ~6m reachable audience opportunity."},
+   {id:"t56",ttl:"Agree JV structure & revenue share",owner:"Raj Kumar",status:"todo",deadline:"",tags:["◆ Foundation"],desc:"Structure the membership & credit JV; margin split, member credits/rewards & kickback model."},
+   {id:"t57",ttl:"Support group enquiries — assist only",owner:"Ajay Kawa",status:"todo",deadline:"",tags:[],desc:"We assist on group enquiries naturally, but any management, process review or workflow work is on a management-consultancy (paid advisory) basis only — not us running their operation."},
+   {id:"t58",ttl:"FIT / individual — support via online booking engine",owner:"Product Team",status:"todo",deadline:"",tags:["◆ Systems"],desc:"Support individual / FIT bookings through an online booking engine rather than manual servicing."}
   ]}
 ];
 
 let db=null, connected=false;
 let EDITS={}, ADDED={};
-const LKEY="orn_board_v4_cache";
+const LKEY="orn_board_v5_cache";
 const OPEN={};
 let FILTER="all";
 
@@ -336,27 +343,64 @@ function persistAdded(laneId,newId){
   if(db&&connected){set(ref(db,ADDED_PATH+"/"+laneId+"/"+newId),ADDED[laneId][newId]).then(()=>toast("Task added")).catch(()=>{setSync(false);toast("Added locally",true)});}
   else toast("Added locally",true);
 }
-function removeAdded(laneId,newId){
-  if(ADDED[laneId])delete ADDED[laneId][newId];
-  cacheSave();
-  if(db&&connected){remove(ref(db,ADDED_PATH+"/"+laneId+"/"+newId)).then(()=>toast("Removed")).catch(()=>toast("Removed locally",true));}
-  render();
+function removeAddedDb(laneId,newId){
+  if(db&&connected){remove(ref(db,ADDED_PATH+"/"+laneId+"/"+newId)).then(()=>toast("Deleted")).catch(()=>toast("Deleted locally",true));}
+  else toast("Deleted locally",true);
 }
 function setSync(on){const d=document.getElementById("syncdot"),t=document.getElementById("synctext");
   if(!d)return;d.className="syncdot "+(on?"on":"off");t.textContent=on?"Live · synced":"Offline · local only";}
 
+/* resolve merged view */
 function statusOf(t){return (EDITS[t.id]&&EDITS[t.id].status)||t.status}
 function ownerOf(t){return (EDITS[t.id]&&EDITS[t.id].owner)||t.owner}
 function dlOf(t){return (EDITS[t.id]&&EDITS[t.id].deadline!==undefined)?EDITS[t.id].deadline:t.deadline}
+function orderOf(t,baseIdx){return (EDITS[t.id]&&EDITS[t.id].order!==undefined)?EDITS[t.id].order:(t.order!==undefined?t.order:baseIdx)}
+function isDeleted(t){return t.added ? false : !!(EDITS[t.id]&&EDITS[t.id].deleted)}
+
+// merged, ordered, non-deleted task list for a lane
 function tasksFor(lane){
-  const added=ADDED[lane.id]?Object.entries(ADDED[lane.id]).map(([id,v])=>({id,ttl:v.ttl,owner:v.owner,status:v.status,deadline:v.deadline||"",desc:v.desc||"",tags:[],added:true})):[];
-  return lane.tasks.concat(added);
+  const base=lane.tasks.map((t,i)=>({...t,_baseIdx:i}));
+  const added=ADDED[lane.id]?Object.entries(ADDED[lane.id]).map(([id,v])=>({id,ttl:v.ttl,owner:v.owner,status:v.status,deadline:v.deadline||"",desc:v.desc||"",tags:[],added:true,order:v.order,_baseIdx:1000})):[];
+  const all=base.concat(added).filter(t=>!isDeleted(t));
+  all.sort((a,b)=>orderOf(a,a._baseIdx)-orderOf(b,b._baseIdx));
+  return all;
 }
 
 window.setVal=function(tid,field,value){if(!EDITS[tid])EDITS[tid]={};EDITS[tid][field]=value;persistEdit(tid);render();};
 window.toggle=function(tid){OPEN[tid]=!OPEN[tid];render();};
+
+// move a task up/down within its lane by rewriting order values
+window.moveTask=function(laneId,tid,dir){
+  const lane=LANES.find(l=>l.id===laneId);
+  const list=tasksFor(lane);
+  const idx=list.findIndex(t=>t.id===tid);
+  const swap=idx+dir;
+  if(swap<0||swap>=list.length)return;
+  // assign sequential order to all, then swap the two
+  const orders=list.map((t,i)=>i);
+  [orders[idx],orders[swap]]=[orders[swap],orders[idx]];
+  list.forEach((t,i)=>{
+    const ord=orders[i];
+    if(t.added){ if(!ADDED[laneId])ADDED[laneId]={}; ADDED[laneId][t.id].order=ord; }
+    else { if(!EDITS[t.id])EDITS[t.id]={}; EDITS[t.id].order=ord; }
+  });
+  cacheSave();
+  // persist all touched
+  list.forEach(t=>{ if(t.added){ if(db&&connected)set(ref(db,ADDED_PATH+"/"+laneId+"/"+t.id),ADDED[laneId][t.id]); }
+                    else persistEdit(t.id); });
+  if(!(db&&connected))toast("Moved locally",true); else toast("Moved");
+  render();
+};
+
+window.deleteTask=function(laneId,tid,isAdded){
+  if(!confirm("Delete this task? (Reset restores baseline tasks.)"))return;
+  if(isAdded){ if(ADDED[laneId])delete ADDED[laneId][tid]; cacheSave(); removeAddedDb(laneId,tid); }
+  else { if(!EDITS[tid])EDITS[tid]={}; EDITS[tid].deleted=true; persistEdit(tid); }
+  render();
+};
+
 window.resetBoard=function(){
-  if(!confirm("Reset ALL edits and remove ALL added tasks, back to the baseline plan? This clears the shared saved copy."))return;
+  if(!confirm("Reset ALL edits, restore deleted tasks and remove ALL added tasks, back to the baseline plan? This clears the shared saved copy."))return;
   EDITS={};ADDED={};localStorage.removeItem(LKEY);
   if(db&&connected){remove(ref(db,EDITS_PATH));remove(ref(db,ADDED_PATH)).then(()=>toast("Reset")).catch(()=>toast("Reset locally",true));}
   render();
@@ -375,12 +419,13 @@ window.saveAdd=function(laneId){
   const status=f.querySelector(".nf-status").value;
   const deadline=f.querySelector(".nf-dl").value;
   const desc=f.querySelector(".nf-desc").value.trim();
+  const lane=LANES.find(l=>l.id===laneId);
+  const order=tasksFor(lane).length; // append at end
   const newId="a"+Date.now().toString(36)+Math.floor(Math.random()*1000);
   if(!ADDED[laneId])ADDED[laneId]={};
-  ADDED[laneId][newId]={ttl,owner,status,deadline,desc};
+  ADDED[laneId][newId]={ttl,owner,status,deadline,desc,order};
   persistAdded(laneId,newId);render();
 };
-window.deleteAdded=function(laneId,tid){if(confirm("Delete this added task?"))removeAdded(laneId,tid);};
 
 function statusMeta(k){return STATUSES.find(s=>s.k===k)||STATUSES[0]}
 function dlSoon(d){if(!d)return false;const days=(new Date(d+"T00:00:00")-new Date())/86400000;return days<=7&&days>=-3650}
@@ -397,17 +442,21 @@ function render(){
     const el=document.createElement("div");el.className="lane";el.id=lane.id;
     const list=tasksFor(lane);
     let body="";
-    list.forEach(t=>{
+    list.forEach((t,idx)=>{
       const st=statusOf(t),ow=ownerOf(t),dl=dlOf(t),open=!!OPEN[t.id];
-      const hide=!matchFilter(t);const sm=statusMeta(st);
+      const hide=!matchFilter(t);
       const tags=(t.tags||[]).map(x=>`<span class="xtag">${x}</span>`).join("")+(t.added?`<span class="addedtag">Added</span>`:"");
       const optOwner=OWNERS.map(o=>`<option ${o===ow?"selected":""}>${o}</option>`).join("");
       const optStatus=STATUSES.map(s=>`<option value="${s.k}" ${s.k===st?"selected":""}>${s.label}</option>`).join("");
-      const delBtn=t.added?`<div class="task-actions"><button class="del" onclick="deleteAdded('${lane.id}','${t.id}')">Delete task</button></div>`:"";
+      const upDis=idx===0?"disabled":"", dnDis=idx===list.length-1?"disabled":"";
       body+=`<div class="task s-${st} ${open?"open":""} ${hide?"hidden":""}">
-        <div class="task-top" onclick="toggle('${t.id}')">
-          <div class="caret">▶</div>
-          <div style="flex:1;min-width:0">
+        <div class="task-top">
+          <div class="movecol">
+            <button class="mv" ${upDis} title="Move up" onclick="moveTask('${lane.id}','${t.id}',-1)">▲</button>
+            <button class="mv" ${dnDis} title="Move down" onclick="moveTask('${lane.id}','${t.id}',1)">▼</button>
+          </div>
+          <div class="caret" onclick="toggle('${t.id}')">▶</div>
+          <div style="flex:1;min-width:0" onclick="toggle('${t.id}')">
             <div class="task-ttl">${t.ttl}</div>
             <div class="task-mini"><span class="sdot cd-${st}"></span>
               <span class="who">${ow}</span>
@@ -425,7 +474,9 @@ function render(){
             <div class="fld"><label>Deadline</label>
               <input type="date" value="${dl||''}" onchange="setVal('${t.id}','deadline',this.value)"></div>
           </div>
-          ${delBtn}
+          <div class="task-actions">
+            <button class="del" onclick="deleteTask('${lane.id}','${t.id}',${t.added?'true':'false'})">Delete task</button>
+          </div>
         </div></div>
       </div>`;
     });
